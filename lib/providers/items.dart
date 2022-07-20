@@ -1,7 +1,6 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
+import '../helpers/db_helper.dart';
 import '../models/transaction.dart';
 import '../widgets/new_transaction.dart';
 
@@ -32,65 +31,71 @@ class Items with ChangeNotifier {
   }
 
   Future<void> fetchAndSetProduct() async {
-    var url1 = Uri.parse(
-        'https://expense-6881c-default-rtdb.firebaseio.com/spendings.json');
-    final response = await http.get(url1);
-    final List<Transaction> loadedExpense = [];
-    final extractedData = json.decode(response.body) as Map<String, dynamic>;
+    final dataList = await DBHelper.getData('user_data');
+    print(dataList);
+    print('printing');
+    //printing
 
-    extractedData.forEach((expenseID, expenseData) {
-      loadedExpense.add(
-        Transaction(
-          id: expenseID,
-          title: expenseData['title'],
-          amount: expenseData['amount'],
-          date: DateTime.parse(expenseData['date']),
-        ),
-      );
-    });
-    _userTransaction = loadedExpense;
+    List<Transaction> loadedProducts = [];
+    // print(loadedProducts);
+    // _userTransaction =  List.generate(
+    //     dataList.length, (index) => Transaction.fromMap(dataList[index]));
+    // print(loadedProducts);
+    print(loadedProducts);
+    loadedProducts = dataList
+        .map(
+          (item) => Transaction(
+            id: item['id'],
+            title: item['title'],
+            amount: item['amount'],
+            date: item['date'],
+          ),
+        )
+        .toList();
+    print(loadedProducts);
+    // print(dataList);
+    // _userTransaction = List.generate(
+    //     dataList.length, (index) => Transaction.fromMap(dataList[index]));
+    // print(loadedProducts);
+    print('not printing');
+    _userTransaction = loadedProducts;
+
     notifyListeners();
   }
 
   Future<void> _addNewTransaction(
       String txTitle, double txAmount, DateTime txdate) async {
-    final url = Uri.parse(
-        'https://expe-c970c-default-rtdb.firebaseio.com/spendings.json');
-    final response = await http.post(
-      url,
-      body: json.encode(
-        {
-          'title': txTitle,
-          'amount': txAmount,
-          'date': txdate.toIso8601String(),
-        },
-      ),
-    );
     final newTx = Transaction(
-      id: json.decode(response.body)['name'], //DateTime.now().toString(),
+      id: DateTime.now().toString(),
       title: txTitle,
       amount: txAmount,
       date: txdate,
     );
+    DBHelper.insert('user_data', {
+      'id': newTx.id,
+      'title': newTx.title,
+      'amount': newTx.amount,
+      'date': newTx.date.toIso8601String(),
+    });
 
     _userTransaction.add(newTx);
     notifyListeners();
   }
 
   Future<void> deleteTransaction(String id) async {
-    final url = Uri.parse(
-        'https://expe-c970c-default-rtdb.firebaseio.com/spendings/$id.json');
-    final existingExpenseIndex =
-        _userTransaction.indexWhere((tx) => tx.id == id);
-    var existingExpense = _userTransaction[existingExpenseIndex];
-    _userTransaction.removeAt(existingExpenseIndex);
-    notifyListeners();
-    final response = await http.delete(url);
-    if (response.statusCode >= 400) {
-      _userTransaction.insert(existingExpenseIndex, existingExpense);
-      notifyListeners();
-    }
-    existingExpense = null as Transaction;
+    // final url = Uri.parse(
+    //     'https://expe-c970c-default-rtdb.firebaseio.com/spendings/$id.json');
+    // final existingExpenseIndex =
+    //     _userTransaction.indexWhere((tx) => tx.id == id);
+    // var existingExpense = _userTransaction[existingExpenseIndex];
+    // _userTransaction.removeAt(existingExpenseIndex);
+    // notifyListeners();
+    // final response = await http.delete(url);
+    // if (response.statusCode >= 400) {
+    //   _userTransaction.insert(existingExpenseIndex, existingExpense);
+    //   notifyListeners();
+    // }
+    // existingExpense = null as Transaction;
   }
 
   void startAddNewTransaction(BuildContext ctx) {

@@ -16,7 +16,7 @@ class TransactionList extends StatelessWidget {
             ? LayoutBuilder(builder: (ctx, constraints) {
                 return Column(children: [
                   Text(
-                    'No transactions added yet!!',
+                    '${data.userTransaction.length}!',
                     style: Theme.of(context).textTheme.headline6,
                   ),
                   SizedBox(

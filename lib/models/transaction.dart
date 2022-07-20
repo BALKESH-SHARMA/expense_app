@@ -7,8 +7,25 @@ class Transaction {
   late final DateTime date;
 
   Transaction(
-      {@required required this.id,
-      @required required this.title,
-      @required required this.amount,
-      @required required this.date});
+      {required this.id,
+      required this.title,
+      required this.amount,
+      required this.date});
+
+  Map<String, dynamic> toMap() {
+    final map = Map<String, dynamic>();
+    map['id'] = id;
+    map['title'] = title;
+    map['amount'] = amount;
+    map['date'] = date.toIso8601String();
+    return map;
+  }
+
+  static fromMap(Map map) {
+    return Transaction(
+        id: map['id'],
+        title: map['title'],
+        amount: map['amount'],
+        date: DateTime.parse(map['date']));
+  }
 }

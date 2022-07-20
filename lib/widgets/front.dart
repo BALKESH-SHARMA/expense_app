@@ -2,11 +2,7 @@ import 'dart:io';
 
 import 'package:expense/providers/items.dart';
 import 'package:provider/provider.dart';
-
-import '../widgets/new_transaction.dart';
 import 'package:flutter/material.dart';
-
-import '../models/transaction.dart';
 import 'chart.dart';
 import 'transactionList.dart';
 
@@ -18,56 +14,9 @@ class Front extends StatefulWidget {
 }
 
 class _FrontState extends State<Front> {
-  // final List<Transaction> _userTransaction = [
-  //   Transaction(
-  //     id: 't1',
-  //     title: 'Shoes',
-  //     amount: 549.99,
-  //     date: DateTime.now(),
-  //   ),
-  //   Transaction(
-  //     id: 't2',
-  //     title: 'Weekly Food',
-  //     amount: 500.99,
-  //     date: DateTime.now(),
-  //   ),
-  // ];
-  // List<Transaction> get _recentTransaction {
-  //   return _userTransaction.where((tx) {
-  //     return tx.date.isAfter(DateTime.now().subtract(Duration(days: 7)));
-  //   }).toList();
-  // }
-
   bool _showChart = false;
 
-  // void _addNewTransaction(String txTitle, double txAmount, DateTime txdate) {
-  //   final newTx = Transaction(
-  //     id: DateTime.now().toString(),
-  //     title: txTitle,
-  //     amount: txAmount,
-  //     date: txdate,
-  //   );
-  //   setState(() {
-  //     _userTransaction.add(newTx);
-  //   });
-  // }
-
-  // void deleteTransaction(String id) {
-  //   setState(() {
-  //     _userTransaction.removeWhere((tx) => tx.id == id);
-  //   });
-  // }
-
-  // void _startAddNewTransaction(BuildContext ctx) {
-  //   showModalBottomSheet(
-  //     context: ctx,
-  //     builder: (_) {
-  //       return GestureDetector(
-  //           onTap: () {}, child: NewTransaction(_addNewTransaction));
-  //     },
-  //   );
-  // }
-  late Future _expenseFuture;
+  Future? _expenseFuture;
   Future _obtainedExpenseFuture() {
     return Provider.of<Items>(context, listen: false).fetchAndSetProduct();
   }
